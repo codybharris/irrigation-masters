@@ -1,1 +1,8 @@
 @import "tailwindcss";
+@import "@fontsource/oswald/400.css";
+@import "@fontsource/oswald/600.css";
+@import "@fontsource/oswald/700.css";
+
+@theme {
+  --font-family-display: "Oswald", ui-sans-serif, system-ui, sans-serif;
+}

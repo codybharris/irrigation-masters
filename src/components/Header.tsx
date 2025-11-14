@@ -17,7 +17,7 @@ export default function Header() {
 				<div className="flex justify-between items-center h-16">
 					{/* Logo */}
 					<div className="flex-shrink-0">
-						<a href="/" className="text-2xl font-bold text-green-800">
+						<a href="/" className="text-2xl font-bold text-green-800 font-display">
 							Irrigation Masters <span className="text-green-600">CSRA</span>
 						</a>
 					</div>
