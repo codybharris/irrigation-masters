@@ -1,323 +1,229 @@
-import { useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { HiUpload } from 'react-icons/hi';
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    phone: '',
-    email: '',
-    newCustomer: 'no',
-    serviceTypes: [] as string[],
-    issueLocation: '',
-    issueDescription: '',
-  });
+  const formContainerRef = useRef<HTMLDivElement>(null);
 
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-
-  const serviceOptions = [
-    'Residential Irrigation',
-    'Commercial Irrigation',
-    'Control Unit Repair/Replacement',
-    'Sprinkler Head Repair',
-    'Spray Pattern Adjustment',
-    'Valve Location',
-    'Backflow Test',
-    'Winterization',
-    'Exterior Lighting',
-    'Emergency Service',
-    'Not Sure',
-    'Other',
-  ];
-
-  const states = [
-    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
-  ];
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleServiceTypeChange = (serviceType: string) => {
-    setFormData(prev => ({
-      ...prev,
-      serviceTypes: prev.serviceTypes.includes(serviceType)
-        ? prev.serviceTypes.filter(s => s !== serviceType)
-        : [...prev.serviceTypes, serviceType]
-    }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setSelectedFiles(Array.from(e.target.files));
+  useEffect(() => {
+    if (formContainerRef.current && !formContainerRef.current.querySelector('script')) {
+      // Create and insert the Cognito Forms script into the container
+      const script = document.createElement('script');
+      script.src = 'https://www.cognitoforms.com/f/seamless.js';
+      script.setAttribute('data-key', 'yFb0-oxVBES7CXARIPtZIQ');
+      script.setAttribute('data-form', '1');
+      formContainerRef.current.appendChild(script);
     }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement form submission logic
-    console.log('Form data:', formData);
-    console.log('Files:', selectedFiles);
-    alert('Form submitted! (Note: Backend integration needed)');
-  };
+  }, []);
 
   return (
-    <motion.form
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      onSubmit={handleSubmit}
       className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8"
     >
-      {/* Name */}
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Name <span className="text-red-500">*</span>
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First"
-            required
-            value={formData.firstName}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-          />
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last"
-            required
-            value={formData.lastName}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-          />
-        </div>
-      </div>
+      <style>{`
+        /* Seamless iframe container */
+        .cog-cognito {
+          border: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
 
-      {/* Address */}
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Address <span className="text-red-500">*</span>
-        </label>
-        <div className="space-y-3">
-          <input
-            type="text"
-            name="addressLine1"
-            placeholder="Address Line 1"
-            required
-            value={formData.addressLine1}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-          />
-          <input
-            type="text"
-            name="addressLine2"
-            placeholder="Address Line 2"
-            value={formData.addressLine2}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              required
-              value={formData.city}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-            />
-            <select
-              name="state"
-              required
-              value={formData.state}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition bg-white"
-            >
-              <option value="">State</option>
-              {states.map(state => (
-                <option key={state} value={state}>{state}</option>
-              ))}
-            </select>
-            <input
-              type="text"
-              name="zipCode"
-              placeholder="Zip Code"
-              required
-              value={formData.zipCode}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-            />
-          </div>
-        </div>
-      </div>
+        .cog-cognito iframe {
+          border: none !important;
+          width: 100% !important;
+        }
 
-      {/* Phone and Email */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Phone <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            required
-            value={formData.phone}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Email <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="email"
-            name="email"
-            required
-            value={formData.email}
-            onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
-          />
-        </div>
-      </div>
+        /* Match Cognito Forms styling to existing design */
+        .cog-form,
+        .cog-form * {
+          font-family: inherit !important;
+        }
 
-      {/* New Customer */}
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          Are you a new customer?
-        </label>
-        <div className="flex gap-6">
-          <label className="flex items-center cursor-pointer">
-            <input
-              type="radio"
-              name="newCustomer"
-              value="yes"
-              checked={formData.newCustomer === 'yes'}
-              onChange={handleInputChange}
-              className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
-            />
-            <span className="ml-2 text-gray-700">Yes</span>
-          </label>
-          <label className="flex items-center cursor-pointer">
-            <input
-              type="radio"
-              name="newCustomer"
-              value="no"
-              checked={formData.newCustomer === 'no'}
-              onChange={handleInputChange}
-              className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
-            />
-            <span className="ml-2 text-gray-700">No</span>
-          </label>
-        </div>
-      </div>
+        .cog-form input[type="text"],
+        .cog-form input[type="email"],
+        .cog-form input[type="tel"],
+        .cog-form input[type="number"],
+        .cog-form select,
+        .cog-form textarea {
+          width: 100% !important;
+          padding: 0.75rem 1rem !important;
+          border: 1px solid #d1d5db !important;
+          border-radius: 0.5rem !important;
+          outline: none !important;
+          transition: all 0.2s !important;
+          font-size: 1rem !important;
+        }
 
-      {/* Service Type */}
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          What type of service are you requesting? <span className="text-red-500">*</span>
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {serviceOptions.map((service) => (
-            <label key={service} className="flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.serviceTypes.includes(service)}
-                onChange={() => handleServiceTypeChange(service)}
-                className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-              />
-              <span className="ml-2 text-gray-700 text-sm">{service}</span>
-            </label>
-          ))}
-        </div>
-        <p className="text-xs text-gray-500 mt-2">Choose all that apply.</p>
-      </div>
+        .cog-form input[type="text"]:focus,
+        .cog-form input[type="email"]:focus,
+        .cog-form input[type="tel"]:focus,
+        .cog-form input[type="number"]:focus,
+        .cog-form select:focus,
+        .cog-form textarea:focus {
+          border-color: #15803d !important;
+          box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2) !important;
+        }
 
-      {/* Issue Location */}
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Where on the property is the issue located? <span className="text-red-500">*</span>
-        </label>
-        <textarea
-          name="issueLocation"
-          required
-          value={formData.issueLocation}
-          onChange={handleInputChange}
-          rows={3}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition resize-none"
-        />
-      </div>
+        .cog-form label {
+          display: block !important;
+          font-size: 0.875rem !important;
+          font-weight: 600 !important;
+          color: #374151 !important;
+          margin-bottom: 0.5rem !important;
+        }
 
-      {/* Issue Description */}
-      <div className="mb-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Please describe the issue you are having <span className="text-red-500">*</span>
-        </label>
-        <textarea
-          name="issueDescription"
-          required
-          value={formData.issueDescription}
-          onChange={handleInputChange}
-          rows={4}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition resize-none"
-        />
-      </div>
+        .cog-form .cog-button,
+        .cog-form button[type="submit"] {
+          width: 100% !important;
+          background-color: #15803d !important;
+          color: white !important;
+          padding: 1rem 2rem !important;
+          border-radius: 0.5rem !important;
+          font-weight: 600 !important;
+          font-size: 1.125rem !important;
+          border: none !important;
+          cursor: pointer !important;
+          transition: background-color 0.2s !important;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+        }
 
-      {/* File Upload */}
-      <div className="mb-8">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Upload any relevant images
-        </label>
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-500 transition">
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-            id="file-upload"
-          />
-          <label htmlFor="file-upload" className="cursor-pointer">
-            <HiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <span className="text-green-600 font-medium">Upload</span>
-            <span className="text-gray-600"> or drag files here.</span>
-          </label>
-          {selectedFiles.length > 0 && (
-            <div className="mt-4 text-left">
-              <p className="text-sm font-medium text-gray-700 mb-2">Selected files:</p>
-              <ul className="text-sm text-gray-600 space-y-1">
-                {selectedFiles.map((file, index) => (
-                  <li key={index}>- {file.name}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
+        .cog-form .cog-button:hover,
+        .cog-form button[type="submit"]:hover {
+          background-color: #166534 !important;
+        }
 
-      {/* Submit Button */}
-      <motion.button
-        type="submit"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="w-full bg-green-700 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-800 transition-colors shadow-lg"
-      >
-        Submit Request
-      </motion.button>
-    </motion.form>
+        .cog-form .cog-required {
+          color: #ef4444 !important;
+        }
+
+        /* CHECKBOX AND RADIO - Nuclear option */
+        .cog-form input[type="checkbox"],
+        .cog-form input[type="radio"] {
+          -webkit-appearance: none !important;
+          -moz-appearance: none !important;
+          appearance: none !important;
+          width: 18px !important;
+          height: 18px !important;
+          min-width: 18px !important;
+          min-height: 18px !important;
+          border: 2px solid #d1d5db !important;
+          border-radius: 4px !important;
+          cursor: pointer !important;
+          position: relative !important;
+          margin: 0 !important;
+          vertical-align: middle !important;
+          flex-shrink: 0 !important;
+          background-color: white !important;
+          transition: all 0.2s !important;
+        }
+
+        .cog-form input[type="radio"] {
+          border-radius: 50% !important;
+        }
+
+        .cog-form input[type="checkbox"]:checked,
+        .cog-form input[type="radio"]:checked {
+          background-color: #15803d !important;
+          border-color: #15803d !important;
+        }
+
+        .cog-form input[type="checkbox"]:checked::after {
+          content: '' !important;
+          position: absolute !important;
+          left: 5px !important;
+          top: 2px !important;
+          width: 4px !important;
+          height: 8px !important;
+          border: solid white !important;
+          border-width: 0 2px 2px 0 !important;
+          transform: rotate(45deg) !important;
+        }
+
+        .cog-form input[type="radio"]:checked::after {
+          content: '' !important;
+          position: absolute !important;
+          left: 4px !important;
+          top: 4px !important;
+          width: 6px !important;
+          height: 6px !important;
+          border-radius: 50% !important;
+          background: white !important;
+        }
+
+        /* Checkbox/Radio containers and labels */
+        .cog-form label > input[type="checkbox"],
+        .cog-form label > input[type="radio"] {
+          margin-right: 10px !important;
+        }
+
+        .cog-form label:has(input[type="checkbox"]),
+        .cog-form label:has(input[type="radio"]) {
+          display: inline-flex !important;
+          align-items: center !important;
+          margin-bottom: 0.75rem !important;
+          font-weight: 400 !important;
+          cursor: pointer !important;
+        }
+
+        /* FILE UPLOAD - Smaller green button */
+        .cog-form .cog-upload,
+        .cog-form .cog-file-upload {
+          padding: 0.75rem !important;
+        }
+
+        .cog-form .cog-upload button,
+        .cog-form .cog-file-upload button,
+        .cog-form button[data-test="upload-button"] {
+          background-color: #15803d !important;
+          border-color: #15803d !important;
+          padding: 0.5rem 1.5rem !important;
+          font-size: 0.875rem !important;
+          max-width: 150px !important;
+        }
+
+        .cog-form .cog-upload button:hover,
+        .cog-form .cog-file-upload button:hover,
+        .cog-form button[data-test="upload-button"]:hover {
+          background-color: #166534 !important;
+          border-color: #166534 !important;
+        }
+
+        .cog-form textarea {
+          min-height: 120px !important;
+          resize: vertical !important;
+        }
+
+        .cog-form .cog-field-group,
+        .cog-form .cog-form__fieldset {
+          margin-bottom: 1.5rem !important;
+        }
+
+        .cog-form .cog-form__field-description {
+          font-size: 0.75rem !important;
+          color: #6b7280 !important;
+          margin-top: 0.5rem !important;
+        }
+
+        /* Error messages */
+        .cog-form .cog-error {
+          color: #ef4444 !important;
+          font-size: 0.875rem !important;
+          margin-top: 0.25rem !important;
+        }
+
+        /* Success message */
+        .cog-form .cog-success {
+          background-color: #d1fae5 !important;
+          color: #065f46 !important;
+          padding: 1rem !important;
+          border-radius: 0.5rem !important;
+          margin-bottom: 1rem !important;
+        }
+      `}</style>
+
+      <div className="cognito" ref={formContainerRef}></div>
+    </motion.div>
   );
 }
