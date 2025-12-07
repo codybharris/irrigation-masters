@@ -22,9 +22,15 @@ export default function Header() {
                 alt="Irrigation Masters Logo"
                 className="h-12 w-12"
               />
-              <span className="text-2xl text-green-800 font-display">
-                Irrigation Masters
-              </span>
+              <div>
+                <span className="text-2xl text-black font-display mr-1 ">
+                  Irrigation
+                </span>
+                <span className="text-2xl text-green-800 font-display">
+                  Masters
+                </span>
+              </div>
+
             </a>
           </div>
 
