@@ -4,12 +4,16 @@ import '../styles/global.css'
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = "Irrigation Masters CSRA - Professional Irrigation Services",
-  description = "Expert irrigation system design, repair, and emergency services in the CSRA. Quality sprinkler installation and maintenance for residential and commercial properties."
+  description = "Expert irrigation system design, repair, and emergency services in the CSRA. Quality sprinkler installation and maintenance for residential and commercial properties.",
+  ogImage = "/images/logo.png"
 } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://irrigationmasterscsra.com");
 ---
 
 <!doctype html>
@@ -21,6 +25,25 @@ const {
     <link rel="icon" type="image/png" href="/images/logo.png" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- OpenGraph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site || "https://irrigationmasterscsra.com")} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Irrigation Masters CSRA" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site || "https://irrigationmasterscsra.com")} />
   </head>
   <body class="min-h-screen flex flex-col bg-gray-50">
     <slot />

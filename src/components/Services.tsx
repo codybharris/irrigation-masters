@@ -1,6 +1,4 @@
 import { motion } from 'framer-motion';
-import { HiDesktopComputer, HiCog, HiLightningBolt, HiClipboardCheck } from 'react-icons/hi';
-import { useState } from 'react';
 
 const services = [
   {
